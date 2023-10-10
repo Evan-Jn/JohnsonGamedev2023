@@ -74,7 +74,7 @@ public class ThirdPersonController : MonoBehaviour
     {
         //What direction to face
 
-        var cam_position = new Vector3(camera.position.x, camera.position.y, camera.position.z);
+        var cam_position = new Vector3(camera.position.x, player.position.y, camera.position.z);
         Vector3 view_direction = player.position - cam_position;
 
         orientation.forward = view_direction;

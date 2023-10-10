@@ -25,6 +25,8 @@ public class FirstPersonController : MonoBehaviour
     private Vector3 playerVelocity;
     private bool grounded;
     private Vector2 mouseMovement;
+    private float predictedHeight;
+    private Vector3 moveVector;
 
     //Camera Variables
     public Camera cameraLive;
@@ -46,31 +48,44 @@ public class FirstPersonController : MonoBehaviour
         // Update is called once per frame
     void Update()
     {
+
         grounded = characterController.isGrounded;
-        MovePlayer();
         Look();
+    }
+    private void FixedUpdate()
+    {
+        MovePlayer();
+
     }
 
     public void MovePlayer()
     {
-        Vector3 moveVector = transform.right * moveInput.x + transform.forward * moveInput.y;
-        characterController.Move((moveVector*speed + playerVelocity)*Time.deltaTime);
-        if (grounded)
+
+        if (!grounded || playerVelocity.y > 0f)
         {
             playerVelocity.y += gravity * Time.deltaTime;
         } else
         {
+
             playerVelocity.y = -2.5f;
+            moveVector = transform.right* moveInput.x + transform.forward * moveInput.y;
+            moveVector *= speed;
         }
+
+        characterController.Move((moveVector + playerVelocity) * Time.deltaTime);
+
     }
 
     public void Look()
     {
         float xAmmount;
         float yAmmount;
-        xAmmount = mouseMovement.x * sensitivity;
-        yAmmount = mouseMovement.y * sensitivity;
-        transform.Rotate(Vector3.up * mouseMovement.x);
+        xAmmount = mouseMovement.x * sensitivity * 0.1f;
+        yAmmount = mouseMovement.y * sensitivity * 0.1f;
+        transform.Rotate(Vector3.up * xAmmount);
+        cam_x_rotation -= yAmmount;
+        cam_x_rotation = Mathf.Clamp(cam_x_rotation, -80f, 80f);
+        Camera.main.transform.localEulerAngles = new Vector3(cam_x_rotation, 0f, 0f);
     }
 
     public void OnMove(InputAction.CallbackContext context) 
@@ -82,12 +97,16 @@ public class FirstPersonController : MonoBehaviour
     public void OnLook(InputAction.CallbackContext context)
     {
         mouseMovement = context.ReadValue<Vector2>();
-        Debug.Log("MouseMovement Raw: " + mouseMovement.ToString());
+        //Debug.Log("MouseMovement Raw: " + mouseMovement.ToString());
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        Jump();
+        if(context.performed)
+        {
+            Jump();
+        }
+        
     }
 
     public void Jump()

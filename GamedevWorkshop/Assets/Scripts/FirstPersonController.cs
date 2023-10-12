@@ -60,19 +60,23 @@ public class FirstPersonController : MonoBehaviour
 
     public void MovePlayer()
     {
+        float influence;
 
         if (!grounded || playerVelocity.y > 0f)
         {
             playerVelocity.y += gravity * Time.deltaTime;
+            influence = 0.03f;
         } else
         {
 
             playerVelocity.y = -2.5f;
-            moveVector = transform.right* moveInput.x + transform.forward * moveInput.y;
-            moveVector *= speed;
+            influence = 0.3f;
         }
 
-        characterController.Move((moveVector + playerVelocity) * Time.deltaTime);
+        Vector3 desiredDirection = transform.right * moveInput.x + transform.forward * moveInput.y;
+        moveVector = Vector3.Lerp(moveVector, desiredDirection, influence);
+
+        characterController.Move((moveVector*speed + playerVelocity) * Time.deltaTime);
 
     }
 

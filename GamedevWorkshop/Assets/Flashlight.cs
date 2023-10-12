@@ -6,10 +6,11 @@ using UnityEngine.InputSystem;
 public class Flashlight : MonoBehaviour
 {
     public Light light;
+    private AudioSource myAudioSource;
     // Start is called before the first frame update
     void Start()
     {
-        
+        myAudioSource = GetComponent<AudioSource>();   
     }
 
     // Update is called once per frame
@@ -20,9 +21,9 @@ public class Flashlight : MonoBehaviour
 
     public void OnClick(InputAction.CallbackContext context)
     {
-        Debug.Log("wow");
         if (context.performed)
         {
+            myAudioSource.Play();
             light.enabled = !light.enabled;
         }
     }

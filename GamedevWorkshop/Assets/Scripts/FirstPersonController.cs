@@ -75,8 +75,16 @@ public class FirstPersonController : MonoBehaviour
 
         Vector3 desiredDirection = transform.right * moveInput.x + transform.forward * moveInput.y;
         moveVector = Vector3.Lerp(moveVector, desiredDirection, influence);
+        Vector3 finalizedMove = (moveVector * speed + playerVelocity) * Time.deltaTime;
 
-        characterController.Move((moveVector*speed + playerVelocity) * Time.deltaTime);
+        RaycastHit hit;
+        if (Physics.SphereCast(transform.position + Vector3.up * characterController.height/4f, characterController.radius, Vector3.up, out hit, finalizedMove.y+0.05f) && playerVelocity.y > 0f) 
+        {
+            finalizedMove.y = 0f;
+            playerVelocity.y = 0f;
+        }
+
+        characterController.Move(finalizedMove);
 
     }
 

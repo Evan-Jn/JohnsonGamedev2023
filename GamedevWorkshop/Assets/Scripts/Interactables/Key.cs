@@ -2,21 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Door : Interactable
+public class Key : Interactable
 {
-    private AudioSource myAudioSource;
-    private Animator myAnimator;
-
     private KeyManager km;
     [SerializeField]
-    private int reqKey = 0;
+    private int key;
 
     // Start is called before the first frame update
     void Start()
     {
-        myAudioSource = GetComponent<AudioSource>();
         km = GameObject.FindGameObjectWithTag("KeyManager").GetComponent<KeyManager>();
-        myAnimator = transform.parent.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -27,11 +22,10 @@ public class Door : Interactable
 
     public override void Interact()
     {
-        if (!isLocked || km.hasKey(reqKey))
+        if (!isLocked)
         {
-            myAudioSource.Play();
-            myAnimator.SetBool("Open", true);
-            gameObject.layer = 0;
+            km.UnlockKey(key);
+            Destroy(gameObject);
         }
         else
         {

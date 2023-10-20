@@ -2,36 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Door : Interactable
+public class ElevatorButton : Interactable
 {
     private AudioSource myAudioSource;
-    private Animator myAnimator;
-
-    private KeyManager km;
     [SerializeField]
-    private int reqKey = 0;
+    private Animator myAnimator;
+    private float cooldown = 3f;
+
 
     // Start is called before the first frame update
     void Start()
     {
         myAudioSource = GetComponent<AudioSource>();
-        km = GameObject.FindGameObjectWithTag("KeyManager").GetComponent<KeyManager>();
-        myAnimator = transform.parent.GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        cooldown += Time.deltaTime;
+        if(cooldown > 3f)
+        {
+            gameObject.layer = 7;
+        } else
+        {
+            gameObject.layer = 0;
+        }
     }
 
     public override void Interact()
     {
-        if (!isLocked || km.hasKey(reqKey))
+        if (!isLocked && cooldown > 3f)
         {
+            cooldown = 0f;
             myAudioSource.Play();
-            myAnimator.SetBool("Open", true);
-            gameObject.layer = 0;
+            myAnimator.SetBool("Open", !myAnimator.GetBool("Open"));
+            
         }
         else
         {

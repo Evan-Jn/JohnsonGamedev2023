@@ -8,6 +8,7 @@ using UnityEngine;
 public abstract class Interactable : MonoBehaviour
 {
     //generic variables for all interactables
+    [SerializeField]
     protected bool isLocked = false;
 
 

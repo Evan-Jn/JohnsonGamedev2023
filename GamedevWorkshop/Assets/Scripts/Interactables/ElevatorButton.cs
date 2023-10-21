@@ -6,7 +6,7 @@ public class ElevatorButton : Interactable
 {
     private AudioSource myAudioSource;
     [SerializeField]
-    private Animator myAnimator;
+    private Animator myAnimator, myOtherAnimator;
     private float cooldown = 3f;
 
 
@@ -36,7 +36,8 @@ public class ElevatorButton : Interactable
             cooldown = 0f;
             myAudioSource.Play();
             myAnimator.SetBool("Open", !myAnimator.GetBool("Open"));
-            
+            myOtherAnimator.SetTrigger("close");
+
         }
         else
         {
